@@ -5,15 +5,30 @@ __author__ = 'zhongyujian'
 import json
 
 
-def get_address():
+def get_region(id):
     """
     给出一个身份证，或者前几位号码，给出所在地的省市县
+    返回格式：{‘code’:0, 'region': '', message:''}
     :return:
     """
-    input_number = input("请输入身份证号码前六位号码查询所在地(输入数字大于两位):")
+    # 初始定义
+    ok_status = 0  # 正确状态码
+    error_status = 1  # 错误状态码
 
-    def print_error_msg():
-        print("请检查输入号码是否正确！")
+    def response(status, region, message):
+        """
+
+        :param status:
+        :param region:
+        :param message:
+        :return:
+        """
+        return {'code': status, 'region': region, 'message': message}  # 返回值
+
+    def load_cardArr():
+        with open("content.json", 'rb') as f:
+            temp = json.loads(f.read())
+            return temp
 
     def check_input_length(number):
         """
@@ -23,7 +38,7 @@ def get_address():
         """
         number = str(number)
         if len(number) < 2:
-            print("输入身份证号码不足两位！请重新输入！")
+            return 1
         elif 2 <= len(number) < 4:
             return 2
         elif 4 <= len(number) < 6:
@@ -31,56 +46,44 @@ def get_address():
         elif len(number) >= 6:
             return 6
 
-    def print_card_adrress(input_number):
-        length = check_input_length(input_number)
-        tp = load_cardArr()
-        if length == 2:
-           num = str(input_number)[0:2]
-           dt = tp['two_digit_number']
-           if num in dt:
-               print(dt[num])
-           else:
-               print_error_msg()
-        elif length == 4:
-            num = str(input_number)[0:4]
-            dt = tp['four_digit_number']
-            if num in dt:
-                print(dt[num])
-            else:
-                print_error_msg()
+    length = check_input_length(id)
+    tp = load_cardArr()
+    if length == 1:
+        return response(error_status, '', '请输入大于2位整数的号码！')
+    elif length == 2:
+        num = str(id)[0:2]
+        dt = tp['two_digit_number']
+        if num in dt:
+            return response(ok_status, dt[num], None)
+        # print(dt[num])
         else:
-            num = str(input_number)[0:6]
-            dt = tp['six_digit_number']
-            if num in dt:
-                print(dt[num])
-            else:
-                print_error_msg()
+            return response(error_status, '', '请检查输入号码是否正确！')
+            # print_error_msg()
+    elif length == 4:
+        num = str(id)[0:4]
+        dt = tp['four_digit_number']
+        if num in dt:
+            return response(ok_status, dt[num], None)
+        else:
+            return response(error_status, '', '请检查输入号码是否正确！')
+    else:
+        num = str(id)[0:6]
+        dt = tp['six_digit_number']
+        if num in dt:
+            return response(ok_status, dt[num], None)
+        else:
+            return response(error_status, '', '请检查输入号码是否正确！')
 
-    def load_cardArr():
-        with open("content.json", 'rb') as f:
-            temp = json.loads(f.read())
-            return temp
 
-    try:
-        print_card_adrress(input_number)
-    except KeyError:
-        print_error_msg()
-
-
-if __name__ == '__main__':
-    get_address()
-
-    # fp = open('content.json', encoding='gb18030', errors='ignore')
-    # data = json.load(fp)
-
-    # print(data['two_digit_number'])
-    with open("content.json", 'rb') as f:
-        temp = json.loads(f.read())
-        # print(temp)
-        # print(temp['two_digit_number'])
-        # print(temp['two_digit_number'])
-        # print(temp['four_digit_number'])
-        # print(temp['six_digit_number'])
-        # print(temp['two_digit_number']['11'])
-        # print(type(temp['two_digit_number']))
-
+# 测试
+print(get_region(1))
+print(get_region(12))
+print(get_region(19))
+print(get_region(152))
+print(get_region(1526))
+print(get_region(1599))
+print(get_region(44151))
+print(get_region(441510))
+print(get_region(441480))
+print(get_region(441481))
+print(get_region(4414810000))
