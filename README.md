@@ -1,5 +1,20 @@
 # who
 
+## 安装
+
+### 初次安装
+
+```shell
+pip install who
+```
+
+### 升级
+
+```shell
+pip install -U who
+```
+
+
 ## 快速开始
 
 ```python
