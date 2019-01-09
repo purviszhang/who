@@ -3,7 +3,7 @@
 __author__ = 'zhongyujian'
 
 import json
-
+from who.map import china
 
 def get_region(id):
     """
@@ -25,10 +25,10 @@ def get_region(id):
         """
         return {'code': status, 'region': region, 'message': message}  # 返回值
 
-    def load_cardArr():
-        with open("content.json", 'rb') as f:
-            temp = json.loads(f.read())
-            return temp
+    # def load_cardArr():
+    #     with open("content.json", 'rb') as f:
+    #         temp = json.loads(f.read())
+    #         return temp
 
     def check_input_length(number):
         """
@@ -47,12 +47,12 @@ def get_region(id):
             return 6
 
     length = check_input_length(id)
-    tp = load_cardArr()
+
     if length == 1:
         return response(error_status, '', '请输入大于2位整数的号码！')
     elif length == 2:
         num = str(id)[0:2]
-        dt = tp['two_digit_number']
+        dt = china['two_digit_number']
         if num in dt:
             return response(ok_status, dt[num], None)
         # print(dt[num])
@@ -61,29 +61,31 @@ def get_region(id):
             # print_error_msg()
     elif length == 4:
         num = str(id)[0:4]
-        dt = tp['four_digit_number']
+        dt = china['four_digit_number']
         if num in dt:
             return response(ok_status, dt[num], None)
         else:
             return response(error_status, '', '请检查输入号码是否正确！')
     else:
         num = str(id)[0:6]
-        dt = tp['six_digit_number']
+        dt = china['six_digit_number']
         if num in dt:
             return response(ok_status, dt[num], None)
         else:
             return response(error_status, '', '请检查输入号码是否正确！')
 
 
-# 测试
-print(get_region(1))
-print(get_region(12))
-print(get_region(19))
-print(get_region(152))
-print(get_region(1526))
-print(get_region(1599))
-print(get_region(44151))
-print(get_region(441510))
-print(get_region(441480))
-print(get_region(441481))
-print(get_region(4414810000))
+if __name__ == '__main__':
+    # 测试
+    print(get_region(1))
+    print(get_region(12))
+    print(get_region(19))
+    print(get_region(152))
+    print(get_region(1526))
+    print(get_region(1599))
+    print(get_region(44151))
+    print(get_region(441510))
+    print(get_region(441480))
+    print(get_region(441481))
+    print(get_region(4414810000))
+
